@@ -11,17 +11,17 @@ import Firebase
 
 class ListDetailsVC: UIViewController {
     
+    @IBOutlet weak var shareBtn: UIBarButtonItem!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var shoppingListLbl: UILabel!
     var shoppingList: ListItem!
     var shoppingListItems = [ShoppingListItem] ()
+//    var userToShareWithExists = false
     let uid = Auth.auth().currentUser!.uid
     
     @IBAction func addItemPressed(_ sender: UIButton) {
 
-        let alert = UIAlertController(title: "Shopping List Item",
-                                      message: "Add a new Item",
-                                      preferredStyle: .alert)
+        let alert = UIAlertController(title: "Shopping List Item", message: "Add a new Item", preferredStyle: .alert)
         
         alert.addTextField { (itemTextField) in
             itemTextField.placeholder = "Enter New Item Name"
@@ -56,10 +56,12 @@ class ListDetailsVC: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
+    @IBAction func shareBtnPressed(_ sender: UIBarButtonItem) {
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         shoppingListLbl.text = shoppingList.listName
-        Dataservice.instance.REF_LISTS.child(shoppingList.listID).child("list items").observe(.value, with: { (listSnapshot) in
+        Dataservice.instance.REF_LISTS.child(shoppingList.listID).child(LIST_ITEMS).observe(.value, with: { (listSnapshot) in
             self.shoppingListItems = []
             if listSnapshot.exists() {
                 for item in listSnapshot.children {
@@ -69,8 +71,70 @@ class ListDetailsVC: UIViewController {
             }
             self.tableView.reloadData()
         })
+        setupToolbar()
     }
     
+    private func setupToolbar() {
+        let toolbar = UIToolbar()
+        toolbar.translatesAutoresizingMaskIntoConstraints = false
+        toolbar.backgroundColor = UIColor(red: 99/255, green: 163/255, blue: 248/255, alpha: 1)
+        toolbar.isTranslucent = true
+        let shareBarBtn = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareList))
+        shareBarBtn.isEnabled = true
+        shareBarBtn.tintColor = UIColor.darkText
+        toolbar.items = [shareBarBtn]
+        view.addSubview(toolbar)
+        
+    // define constraints
+        
+        toolbar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
+        toolbar.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        toolbar.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        toolbar.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        
+    }
+    
+    @objc func shareList() {
+        let alert = UIAlertController(title: "Share List", message: "Add email of user you want to share your list with", preferredStyle: .alert)
+        
+        alert.addTextField { (userTextField) in
+            userTextField.placeholder = "Enter user's email here"
+            userTextField.keyboardType = UIKeyboardType.emailAddress
+            userTextField.delegate = self
+        }
+       
+        let addAction = UIAlertAction(title: "Share", style: .default) { _ in
+            if let userTF = alert.textFields?[0].text {
+                if userTF != "" {
+                    Dataservice.instance.REF_USERS.observeSingleEvent(of: .value, with: { (usersSnapshot) in
+                        if usersSnapshot.exists() {
+                            for users in usersSnapshot.children {
+                                let user = User(snapshot: users as! DataSnapshot)
+                                if user.email == userTF {
+                                    self.shoppingList.share(thisList: self.shoppingList, with: user, completion: { (error) in
+                                        if error != nil {
+                                            self.createAlert(titel: "Error", message: error!)
+                                        }
+                                    })
+                                }
+                            }
+                        }
+                    })
+                }
+            }
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel",
+                                         style: .default)
+                
+        alert.addAction(addAction)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true, completion: nil)
+        
+        
+        
+    }
     func toggleCellCheckbox(_ cell: UITableViewCell, isCompleted: Bool) {
         if !isCompleted {
             cell.accessoryType = .none
@@ -81,7 +145,12 @@ class ListDetailsVC: UIViewController {
             cell.textLabel?.textColor = UIColor.gray
             cell.detailTextLabel?.textColor = UIColor.gray
         }
-        
+    }
+    func createAlert (titel: String, message: String) {
+        let alert = UIAlertController(title: titel, message: message, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
+        }))
+        present(alert, animated: true, completion: nil)
     }
 }
 

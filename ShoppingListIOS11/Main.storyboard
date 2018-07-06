@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Di6-wp-8AK">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Di6-wp-8AK">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -296,7 +296,7 @@
                                 </constraints>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="A5p-HF-PzM">
-                                <rect key="frame" x="0.0" y="90" width="375" height="577"/>
+                                <rect key="frame" x="0.0" y="90" width="375" height="533"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" textLabel="rRB-XX-jDG" detailTextLabel="exM-3b-AWm" style="IBUITableViewCellStyleSubtitle" id="TL4-4a-fwX">
@@ -337,10 +337,12 @@
                             <constraint firstAttribute="trailing" secondItem="CqL-3I-YIb" secondAttribute="trailing" id="FGZ-un-3y0"/>
                             <constraint firstItem="A5p-HF-PzM" firstAttribute="top" secondItem="CqL-3I-YIb" secondAttribute="bottom" id="GOv-WR-3qF"/>
                             <constraint firstItem="A5p-HF-PzM" firstAttribute="leading" secondItem="vcu-lc-XtP" secondAttribute="leading" id="M7i-Us-AsJ"/>
-                            <constraint firstItem="Ho8-MP-zv9" firstAttribute="top" secondItem="A5p-HF-PzM" secondAttribute="bottom" id="abn-I1-I8n"/>
                             <constraint firstAttribute="trailing" secondItem="A5p-HF-PzM" secondAttribute="trailing" id="cdD-XE-Fwl"/>
+                            <constraint firstAttribute="bottom" secondItem="A5p-HF-PzM" secondAttribute="bottom" constant="44" id="eVI-2X-Edw"/>
                         </constraints>
                     </view>
+                    <toolbarItems/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="shoppingListLbl" destination="gpD-7e-McS" id="4hq-df-otR"/>
                         <outlet property="tableView" destination="A5p-HF-PzM" id="1YW-GO-fSJ"/>
@@ -348,7 +350,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wxo-BF-Ex7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1389.5999999999999" y="150.67466266866569"/>
+            <point key="canvasLocation" x="1407" y="149"/>
         </scene>
     </scenes>
     <resources>

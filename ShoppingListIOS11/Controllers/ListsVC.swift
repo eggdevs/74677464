@@ -15,8 +15,11 @@ class ListsVC: UIViewController, Alertable {
     @IBOutlet weak var tableView: UITableView!
     var shoppingLists = [ListItem]()
     let uid = Auth.auth().currentUser!.uid
+    var observers: [UInt] = []
     
     @IBAction func signOutPressed(_ sender: UIButton) {
+        Dataservice.instance.REF_LISTS.removeAllObservers()
+        Dataservice.instance.REF_USERS.child(uid).child(LISTS).child(OWN_LISTS).removeAllObservers()
         do {
             try Auth.auth().signOut()
             self.dismiss(animated: true, completion: nil)
@@ -53,7 +56,7 @@ class ListsVC: UIViewController, Alertable {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        Dataservice.instance.REF_USERS.child(uid).child("shopping lists").observe(.value, with: { (snapshot) in
+        let ownListObserver = Dataservice.instance.REF_USERS.child(uid).child(LISTS).child(OWN_LISTS).observe(.value, with: { (snapshot) in
             self.shoppingLists = []
             if snapshot.exists() {
                 for item in snapshot.children {
@@ -63,6 +66,7 @@ class ListsVC: UIViewController, Alertable {
             }
             self.tableView.reloadData()
         })
+        observers.append(ownListObserver)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

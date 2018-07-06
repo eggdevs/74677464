@@ -45,10 +45,9 @@ class Dataservice {
     }
     
     func createNewShoppingList (uid: String, listName: String) {
-        let listID = REF_USERS.childByAutoId().key
-        print(listID)
-        REF_USERS.child(uid).child("shopping lists").child(listID).updateChildValues(["listID": listID, "list name": listName])
-        REF_LISTS.child(listID).child("list users").updateChildValues([uid: "active"])
+        let listID = REF_USERS.child(LISTS).childByAutoId().key
+        REF_USERS.child(uid).child(LISTS).child(OWN_LISTS).child(listID).updateChildValues([LIST_ID: listID, LIST_NAME: listName])
+        REF_LISTS.child(listID).child(LIST_USERS).updateChildValues([uid: ACTIVE])
     }
     
     func removeShoppingList (uid: String, selectedShoppingList: ListItem) {
@@ -59,8 +58,8 @@ class Dataservice {
         })
         REF_LISTS.child(selectedShoppingList.listID).observeSingleEvent(of: .value, with: { (selectedListSnapshot) in
             if selectedListSnapshot.exists() {
-                self._REF_LISTS.child(selectedShoppingList.listID).child("list users").child(uid).removeValue()
-                self.REF_LISTS.child(selectedShoppingList.listID).child("list users").observeSingleEvent(of: .value, with: { (listUsersSnapshot) in
+                self.REF_LISTS.child(selectedShoppingList.listID).child(LIST_USERS).child(uid).removeValue()
+                self.REF_LISTS.child(selectedShoppingList.listID).child(LIST_USERS).observeSingleEvent(of: .value, with: { (listUsersSnapshot) in
                     if !listUsersSnapshot.exists() {
                         self.REF_LISTS.child(selectedShoppingList.listID).removeValue()
                     }
@@ -71,12 +70,24 @@ class Dataservice {
     
     func addNewItemToShoppingList(selectedShoppingList: ListItem, newShoppingListItem: ShoppingListItem ) {
         let itemID = REF_LISTS.childByAutoId().key
-        let newItem = ["item name": newShoppingListItem.itemName, "item quantity": newShoppingListItem.itemQuantity, "completed": newShoppingListItem.completed] as [String: Any]
-        REF_LISTS.child(selectedShoppingList.listID).child("list items").child(itemID).updateChildValues(newItem)
-        
+        let newItem = [ITEM_NAME: newShoppingListItem.itemName, ITEM_QUANTITY: newShoppingListItem.itemQuantity, COMPLETED: newShoppingListItem.completed] as [String: Any]
+        REF_LISTS.child(selectedShoppingList.listID).child(LIST_ITEMS).child(itemID).updateChildValues(newItem)
     }
     
     func removeItemFromShoppingList(shoppingListItemToRemove: ShoppingListItem) {
         shoppingListItemToRemove.ref?.removeValue()
     }
-}
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+

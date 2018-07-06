@@ -15,6 +15,7 @@ struct ShoppingListItem {
     let itemQuantity: String
     let ref: DatabaseReference?
     var completed: Bool
+    var listUsers: [String]?
     
     init(itemName: String, itemQuantity: String, completed: Bool = false) {
         self.itemName = itemName

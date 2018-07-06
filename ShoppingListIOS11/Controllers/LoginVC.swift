@@ -58,6 +58,8 @@ class LoginVC: UIViewController, Alertable {
                                 if let error = error {
                                     errorMsg = ErrorHandlingService.instance.createFirebaseErrorAlertMessage(error: error)
                                     self.showAlert(errorMsg)
+                                } else {
+                                    self.performSegue(withIdentifier: "goToLists", sender: nil)
                                 }
                             })
                         }
@@ -110,6 +112,7 @@ class LoginVC: UIViewController, Alertable {
             }
         }
     }
+    
     
     @objc func keyboardWillHide(notif: NSNotification) {
         if ((notif.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue) != nil {
