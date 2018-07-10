@@ -54,6 +54,8 @@ class ListsVC: UIViewController, Alertable {
         present(alert, animated: true, completion: nil)
     }
     
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         let ownListObserver = Dataservice.instance.REF_USERS.child(uid).child(LISTS).child(OWN_LISTS).observe(.value, with: { (snapshot) in
@@ -82,6 +84,19 @@ extension ListsVC: UITextFieldDelegate {
 }
 
 extension ListsVC: UITableViewDelegate, UITableViewDataSource {
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+//        if section does not exist, return 0
+        return 44
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return "Own Lists"
+    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return shoppingLists.count

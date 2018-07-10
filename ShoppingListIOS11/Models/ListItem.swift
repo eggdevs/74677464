@@ -32,56 +32,65 @@ struct ListItem {
         return [LIST_NAME: listName, LIST_ID: listID]
     }
     
-    func populateListArray(_ lists: DataSnapshot) -> [String] {
-        var populatedArray: [String] = []
-        
-        let listCollection = lists.value as! [String : AnyObject]
-        for list in listCollection {
-           populatedArray.append(list.key)
+//    func populateListArray(_ lists: DataSnapshot) -> [String] {
+//        var populatedArray: [String] = []
+//
+//        let listCollection = lists.value as! [String : AnyObject]
+//        for list in listCollection {
+//           populatedArray.append(list.key)
+//        }
+//        return populatedArray
+//    }
+    
+    func populateListItemArray(_ lists: DataSnapshot) -> [ListItem] {
+        var populatedListItemArray: [ListItem] = []
+        for list in lists.children.allObjects {
+            let listItem = ListItem(snapshot: list as! DataSnapshot)
+            populatedListItemArray.append(listItem)
         }
-        return populatedArray
+        return populatedListItemArray
     }
     
     func share(thisList: ListItem, with user: User, completion: @escaping (_ error: String?)->()) {
         var errorMessage: String?
-        var pendingShareLists: [String] = []
-        var blockedLists: [String] = []
-        var sharedLists: [String] = []
-        var ownLists: [String] = []
+        var pendingShareLists: [ListItem] = []
+        var blockedLists: [ListItem] = []
+        var sharedLists: [ListItem] = []
+        var ownLists: [ListItem] = []
         user.ref?.child(LISTS).observeSingleEvent(of: .value, with: { (listsSnapshot) in
             
             for lists in listsSnapshot.children.allObjects as! [DataSnapshot] {
                 switch lists.key {
                 case OWN_LISTS:
-                    ownLists = self.populateListArray(lists)
+                    ownLists = self.populateListItemArray(lists)
                 case SHARED_LISTS:
-                    sharedLists = self.populateListArray(lists)
+                    sharedLists = self.populateListItemArray(lists)
                 case BLOCKED_LISTS:
-                    blockedLists = self.populateListArray(lists)
+                    blockedLists = self.populateListItemArray(lists)
                 case PENDING_LISTS:
-                    pendingShareLists = self.populateListArray(lists)
+                    pendingShareLists = self.populateListItemArray(lists)
                 default:
                     break
                 }
             }
             
             for list in ownLists {
-                if thisList.listID == list {
+                if thisList.listID == list.listID {
                     errorMessage = "Cannot share lists with yourself!"
                 }
             }
             for list in blockedLists {
-                if thisList.listID == list {
+                if thisList.listID == list.listID {
                     errorMessage = "User blocked your share request"
                 }
             }
             for list in sharedLists {
-                if thisList.listID == list {
+                if thisList.listID == list.listID {
                     errorMessage = "User already using your list"
                 }
             }
             for list in pendingShareLists {
-                if thisList.listID == list {
+                if thisList.listID == list.listID {
                     errorMessage = "Waiting for user to accept your list"
                 }
             }
